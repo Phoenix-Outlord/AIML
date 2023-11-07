@@ -1,0 +1,32 @@
+!pip install category_encoders
+
+import numpy as np
+import pandas as pd
+import category_encoders as ce
+
+df = pd.read_csv('/content/Data.csv')
+df.tail(5)
+
+df.info()
+
+df.describe()
+
+df.dropna(axis=0,inplace=True)
+
+df.isnull().sum()
+
+df['ScheduledDay'] = pd.to_datetime(df['ScheduledDay']).dt.date.astype('datetime64[ns]')
+df['AppointmentDay'] = pd.to_datetime(df['AppointmentDay']).dt.date.astype('datetime64[ns]')
+
+df.head(5)
+
+df= df.rename(columns={'Hipertension': 'Hypertension', 'Handcap': 'Handicap', 'SMS_received': 'SMSReceived', 'No-show': 'NoShow'})
+
+df.drop(['PatientId', 'AppointmentID', 'Neighbourhood'], axis=1, inplace=True)
+
+df.head(5)
+
+ce_OHE = ce.OneHotEncoder(cols=['Gender','NoShow'])
+df1 = ce_OHE.fit_transform(df)
+
+df1.head(5)

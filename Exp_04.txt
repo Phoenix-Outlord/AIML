@@ -1,0 +1,42 @@
+!pip install render
+!pip install -U spacy
+!pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.1/en_core_sci_sm-0.5.1.tar.gz
+!pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.1/en_core_sci_md-0.5.1.tar.gz
+!pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.1/en_ner_bc5cdr_md-0.5.1.tar.gz
+
+
+import spacy
+#Core models
+import en_core_sci_sm
+import en_core_sci_md
+#NER specific models
+import en_ner_bc5cdr_md
+#Tools for extracting & displaying data
+from spacy import displacy
+import pandas as pd
+import render
+
+
+
+medical_report = "Patient diagnosed with Headache, Nausea, and Vomiting."
+
+
+
+
+nlp_sm = en_core_sci_sm.load()
+doc = nlp_sm(medical_report)
+displacy_image = displacy.render(doc, jupyter=True,style='ent')
+for ent in doc.ents:
+    print(f"Entity: {ent.text}      Label: {ent.label_}      Start_Char:{ent.start_char}      End_Char:{ent.end_char}")
+
+
+
+
+
+
+nlp_bc = en_ner_bc5cdr_md.load()
+doc = nlp_bc(medical_report)
+#Display resulting entity extraction
+displacy_image = displacy.render(doc, jupyter=True,style='ent')
+for ent in doc.ents:
+    print(f"Entity: {ent.text}      Label: {ent.label_}")

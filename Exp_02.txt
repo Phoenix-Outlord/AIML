@@ -1,0 +1,96 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+data = pd.read_csv('/content/Data.csv')
+data.head(5)
+
+
+data.drop(columns=['PatientId','AppointmentID','Neighbourhood'],axis=1,inplace = True)
+data['ScheduledDay'] = pd.to_datetime(data['ScheduledDay']).dt.date.astype('datetime64[ns]')
+data['AppointmentDay'] = pd.to_datetime(data['AppointmentDay']).dt.date.astype('datetime64[ns]')
+
+
+data.head(5)
+
+
+#Univariate Non-graphical
+age = data['Age'].mean()
+no_show = data['No-show'].mode()
+print(age)
+print(no_show)
+
+
+#Null Value
+data.isnull().sum()
+
+
+#Basic Info
+data.info()
+
+
+data.describe()
+
+
+fig,axes=plt.subplots(4,2,figsize=(18,15))
+axes = axes.flatten()
+columns = data.drop(columns=['ScheduledDay','AppointmentDay','Gender','No-show'],axis=1)
+i=0
+for col in columns:
+  data[col].plot(kind = 'hist', ax = axes[i], title = col)
+  i+=1
+plt.show()
+
+
+
+plt.figure(figsize=(4, 4))
+sns.boxplot(x = 'Hipertension', y = 'Age', data = data)
+plt.title('Hipertension vs Age')
+plt.show()
+
+
+
+
+
+plt.figure(figsize=(4, 4))
+sns.boxplot(x = 'Diabetes', y = 'Age', data = data)
+plt.title('Diabetes vs Age')
+plt.show()
+
+
+
+
+sns.countplot(x=data['Gender'])
+plt.title('Gender')
+plt.xlabel('Gender')
+plt.ylabel('Count')
+plt.show()
+
+
+
+
+sns.countplot(x=data['No-show'])
+plt.title('Outcome')
+plt.xlabel('Outcome')
+plt.ylabel('Count')
+plt.show()
+
+
+
+
+
+# Create a scatter plot using Seaborn
+sns.scatterplot(x=data['Age'], y=data['No-show'], label='Data Points')
+# Add labels and title
+plt.xlabel('Age')
+plt.ylabel('Diabetes')
+plt.title('Age VS Diabetes')
+# Show the plot
+plt.legend()
+plt.show()
+
+
+
+sns.heatmap(data.corr(),annot=True)
