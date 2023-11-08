@@ -1,0 +1,150 @@
+#Import All Libraries
+import joblib
+#import opendatasets as od
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.naive_bayes import GaussianNB
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, classification_report
+
+
+
+
+
+
+dataset = pd.read_csv('/content/diabetes.csv')
+
+
+dataset.head()
+
+
+
+dataset.shape
+
+
+
+
+
+dataset.info()
+
+
+
+dataset.describe()
+
+
+dataset['Outcome'].value_counts()
+
+
+
+non_diabetic = dataset.loc[dataset['Outcome'] == 0].count()[0]
+diabetic = dataset.loc[dataset['Outcome'] == 1].count()[0]
+lable = ['diabetic','non_diabetic']
+
+
+
+plt.pie([non_diabetic,diabetic],labels=['Non-Diabetic','Diabetic'], explode = (0,0.09),autopct='%2.1f%%',shadow = True)
+
+
+
+plt.figure(figsize=(5,7))
+sns.countplot(x='Outcome',data=dataset)
+plt.show()
+
+
+
+dataset.hist(figsize=(12,12))
+
+
+
+dataset.isnull().sum()
+
+
+
+
+
+#No Of Zeros In respective Coloumn
+print(dataset[dataset['Glucose']==0].shape[0])
+print(dataset[dataset['BloodPressure']==0].shape[0])
+print(dataset[dataset['SkinThickness']==0].shape[0])
+print(dataset[dataset['Insulin']==0].shape[0])
+print(dataset[dataset['BMI']==0].shape[0])
+
+
+
+
+
+#Repalace Zeros with mean
+dataset['Glucose'].replace(to_replace=0,value=dataset['Glucose'].mean(),inplace=True)
+dataset['BloodPressure'].replace(to_replace=0,value=dataset['BloodPressure'].mean(),inplace=True)
+dataset['SkinThickness'].replace(to_replace=0,value=dataset['SkinThickness'].mean(),inplace=True)
+dataset['Insulin'].replace(to_replace=0,value=dataset['Insulin'].mean(),inplace=True)
+dataset['BMI'].replace(to_replace=0,value=dataset['BMI'].mean(),inplace=True)
+
+
+
+
+#Repalace Zeros with mean
+dataset['Glucose'].replace(to_replace=0,value=dataset['Glucose'].mean(),inplace=True)
+dataset['BloodPressure'].replace(to_replace=0,value=dataset['BloodPressure'].mean(),inplace=True)
+dataset['SkinThickness'].replace(to_replace=0,value=dataset['SkinThickness'].mean(),inplace=True)
+dataset['Insulin'].replace(to_replace=0,value=dataset['Insulin'].mean(),inplace=True)
+dataset['BMI'].replace(to_replace=0,value=dataset['BMI'].mean(),inplace=True)
+
+
+
+dataset.describe()
+
+
+
+X = dataset.drop(columns = 'Outcome',axis=1)
+Y = dataset['Outcome']
+
+
+X_Train,X_Test,Y_Train,Y_Test=train_test_split(X,Y,test_size=0.2,random_state=1)
+
+
+
+
+
+model = GaussianNB()
+model.fit(X_Train,Y_Train)
+
+
+model_predtiction = model.predict(X_Test)
+
+
+
+
+print("Accuracy Of (TRAIN) Navie-Bayes is ",model.score(X_Train,Y_Train)*100)
+print("Accuracy Of (TEST) Navie-Bayes is ",model.score(X_Test,Y_Test)*100)
+print("Accuracy Of Navie-Bayes is ",accuracy_score(Y_Test,model_predtiction)*100)
+
+
+
+
+
+
+# Evaluate the model's performance
+accuracy = accuracy_score(Y_Test,model_predtiction)
+classification_rep = classification_report(Y_Test, model_predtiction)
+
+# Print the results
+print(f'Accuracy: {accuracy}')
+print(f'Classification Report:\n{classification_rep}')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
